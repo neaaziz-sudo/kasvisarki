@@ -8,6 +8,7 @@ Ruoissa ei ole lihaa, kalaa eikä sieniä. Maitotuotteet ovat sallittuja. Kananm
 esimerkiksi taikinassa, mutta ei näkyvänä osana ruokaa.
 
 Voit myös lisätä omia ruokia ja reseptilinkkejä, merkitä ruokia vegaanisiksi ja vaihtaa teemoja ja värejä.
+Alleviivattu ruoan nimi avaa reseptin, ja ruoka valitaan nimen vieressä olevasta valintaruudusta.
 Sovellus toimii ensimmäisen avauksen jälkeen myös ilman verkkoyhteyttä.
 
 ## Asennus puhelimeen

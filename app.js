@@ -205,8 +205,8 @@
   function recipeLink(meal, className) {
     return h('a', {
       class: className, href: meal.url, target: '_blank', rel: 'noopener noreferrer',
-      'aria-label': `Resepti: ${meal.name} (avautuu uuteen välilehteen)`,
-    }, 'Resepti ↗');
+      'aria-label': `${meal.name}: avaa resepti uuteen välilehteen`,
+    }, meal.name);
   }
 
   const newCustomId = () => `c-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
@@ -411,6 +411,7 @@
           }),
           'Näytä vain vegaaniset'),
         h('p', { class: 'day-count', id: 'day-count' }, `${selectedOf(dayId).length} valittu`)),
+      h('p', { class: 'day-hint' }, 'Alleviivattu nimi avaa reseptin.'),
       list,
       addForm(dayId),
       deletedCount
@@ -425,11 +426,12 @@
     if (meal.id === editingId) return h('li', { class: 'meal' }, editForm(meal, dayId));
     const selected = !!state.selected[meal.id];
     const li = h('li', { class: `meal${selected ? ' is-selected' : ''}` });
-    const hasMeta = meal.url || meal.vegan;
+    const checkId = `check-${meal.id}`;
     li.append(h('div', { class: 'meal-main' },
       h('label', { class: 'meal-check' },
         h('input', {
-          type: 'checkbox', class: 'checkbox', checked: selected, 'data-check': meal.id,
+          type: 'checkbox', class: 'checkbox', id: checkId, checked: selected, 'data-check': meal.id,
+          'aria-label': `Valitse ${meal.name}`,
           onchange: (event) => {
             if (event.target.checked) state.selected[meal.id] = true;
             else delete state.selected[meal.id];
@@ -438,8 +440,10 @@
             view.querySelector('#day-count').textContent = `${selectedOf(dayId).length} valittu`;
             updateTabs();
           },
-        }),
-        h('span', { class: 'meal-name' }, meal.name)),
+        })),
+      meal.url
+        ? recipeLink(meal, 'meal-name')
+        : h('label', { class: 'meal-name', htmlFor: checkId }, meal.name),
       h('button', {
         type: 'button', class: 'icon-btn row-btn', 'aria-label': `Muokkaa: ${meal.name}`, 'data-edit': meal.id,
         onclick: () => {
@@ -451,9 +455,7 @@
         type: 'button', class: 'icon-btn row-btn remove-x', 'aria-label': `Poista: ${meal.name}`, 'data-remove': meal.id,
         onclick: () => removeMeal(meal, dayId),
       }, h('span', { 'aria-hidden': 'true' }, '×')),
-      hasMeta ? h('div', { class: 'meal-meta' },
-        meal.vegan ? h('span', { class: 'tag' }, 'Vegaani') : null,
-        meal.url ? recipeLink(meal, 'recipe-link') : null) : null,
+      meal.vegan ? h('div', { class: 'meal-meta' }, h('span', { class: 'tag' }, 'Vegaani')) : null,
     ));
     return li;
   }
@@ -644,9 +646,8 @@
         h('span', { class: 'day-card-theme' }, themeOf(day))),
       meals.length
         ? h('ul', null, meals.map((meal) => h('li', null,
-          h('span', null, meal.name),
-          meal.vegan ? h('span', { class: 'tag' }, 'Vegaani') : null,
-          meal.url ? recipeLink(meal, 'recipe-link') : null)))
+          meal.url ? recipeLink(meal, 'recipe-name') : h('span', null, meal.name),
+          meal.vegan ? h('span', { class: 'tag' }, 'Vegaani') : null)))
         : h('p', { class: 'day-card-empty' }, 'Ei valittuja ruokia.'));
   }
 

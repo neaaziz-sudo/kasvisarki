@@ -92,31 +92,17 @@ a { color: var(--accent-ink); }
   max-width: 680px; margin: 0 auto;
   padding: calc(8px + env(safe-area-inset-top)) 12px 8px;
 }
-/* Logo liikkuu kolmella päällekkäisellä kuvalla: pää ja häntä ovat rajattuja kopioita,
-   joita käännetään kaulan ja hännän tyven ympäri. Napautus pysäyttää animaation. */
+/* Logo on 12 ruudun sprite, jossa vegesaurus pureskelee. Ruutu 0 on pysäytetty kuva.
+   Napautus pysäyttää animaation. */
 .logo-btn {
-  position: relative; flex: none; width: 64px; height: 64px; padding: 0;
-  background: none; border: 0; border-radius: 16px; overflow: hidden; cursor: pointer;
+  flex: none; width: 88px; height: 88px; padding: 0;
+  background: url("icons/vegesaurus-syo.webp") 0 0 / 1200% 100% no-repeat;
+  border: 0; border-radius: 18px; cursor: pointer; forced-color-adjust: none;
+  animation: logo-eat 1.2s steps(12) infinite;
 }
-.logo-btn img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
-.logo-head {
-  clip-path: polygon(0 8%, 46% 8%, 47% 33%, 39% 47%, 38% 60%, 21% 67%, 0 52%);
-  transform-origin: 42.5% 40%;
-  animation: logo-chew 1.1s ease-in-out infinite;
-}
-.logo-tail {
-  clip-path: polygon(69% 0, 100% 0, 100% 40%, 95% 53%, 87% 67%, 78% 52%, 86% 40%, 69% 33%);
-  transform-origin: 84% 58%;
-  animation: logo-wag 1.6s ease-in-out infinite;
-}
-.logo-btn.is-paused img { animation: none; }
-@keyframes logo-chew {
-  0%, 100% { transform: rotate(0deg); }
-  50% { transform: rotate(-5deg); }
-}
-@keyframes logo-wag {
-  0%, 100% { transform: rotate(-5deg); }
-  50% { transform: rotate(5deg); }
+.logo-btn.is-paused { animation: none; }
+@keyframes logo-eat {
+  to { background-position: -1056px 0; }
 }
 .app-title { flex: 1; min-width: 0; font-size: 1.2rem; line-height: 1.15; }
 .icon-btn {
@@ -208,25 +194,28 @@ a { color: var(--accent-ink); }
 .day-theme { color: var(--accent-ink); font-weight: 700; font-size: 1.05rem; }
 .day-tools { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; column-gap: 12px; }
 .day-count { color: var(--muted); font-size: .95rem; }
+.day-hint { color: var(--muted); font-size: .92rem; }
 
 .meal-list { list-style: none; margin: 8px 0 0; padding: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
 .meal { border-bottom: 1px solid var(--line); }
 .meal:last-child { border-bottom: 0; }
-.meal-main { display: grid; grid-template-columns: minmax(0, 1fr) 44px 44px; align-items: start; padding: 2px 2px 2px 0; }
-.meal-check { display: flex; align-items: flex-start; gap: 10px; min-height: 44px; padding: 9px 4px 9px 10px; cursor: pointer; }
-.meal-name { padding-top: 1px; }
+.meal-main { display: grid; grid-template-columns: 50px minmax(0, 1fr) 44px 44px; align-items: start; padding: 2px 2px 2px 0; }
+.meal-check { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; margin-left: 6px; cursor: pointer; }
+/* Nimi on linkki, jos ruoalla on resepti. Muuten nimen napautus valitsee ruoan. */
+.meal-name { display: block; min-height: 44px; padding: 10px 6px 9px; cursor: pointer; }
+a.meal-name, a.recipe-name { color: var(--accent-ink); text-decoration: underline; text-underline-offset: 3px; }
 .meal.is-selected { background: var(--accent-soft); box-shadow: inset 4px 0 0 var(--accent); }
 .meal.is-selected .meal-name { font-weight: 700; }
 .meal-meta {
-  grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 2px 12px;
-  padding: 0 10px 4px 46px; margin-top: -6px;
+  grid-column: 2 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 2px 12px;
+  padding: 0 10px 8px 6px; margin-top: -6px;
 }
 .tag {
   display: inline-block; padding: 1px 8px; border-radius: 999px;
   background: var(--secondary); color: var(--on-secondary);
   font-size: .78rem; font-weight: 700; letter-spacing: .01em;
 }
-.recipe-link { display: inline-flex; align-items: center; min-height: 44px; font-size: .92rem; font-weight: 600; }
+.recipe-name { display: inline-flex; align-items: center; min-height: 44px; }
 .row-btn { color: var(--muted); }
 .row-btn:hover { color: var(--text); }
 .meal.is-selected .row-btn:hover { background: var(--bg); }
