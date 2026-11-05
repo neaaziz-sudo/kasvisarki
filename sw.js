@@ -1,6 +1,6 @@
 // Kaikki polut ovat suhteellisia, joten sovellus toimii myös alihakemistossa
 // (esim. https://kayttaja.github.io/kasvisarki/). Vaihda versio, kun tiedostolista muuttuu.
-const CACHE = 'vegesaurus-arkiruokia-v4';
+const CACHE = 'vegesaurus-arkiruokia-v5';
 const ASSETS = [
   './',
   './index.html',
@@ -17,7 +17,10 @@ const ASSETS = [
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE).then((cache) => cache.addAll(ASSETS)).then(() => self.skipWaiting()),
+    // cache: 'reload' ohittaa selaimen HTTP-välimuistin, ettei uuteen versioon tallennu vanhoja tiedostoja.
+    caches.open(CACHE)
+      .then((cache) => cache.addAll(ASSETS.map((url) => new Request(url, { cache: 'reload' }))))
+      .then(() => self.skipWaiting()),
   );
 });
 
@@ -43,7 +46,11 @@ self.addEventListener('fetch', (event) => {
     const cache = await caches.open(CACHE);
     const key = request.mode === 'navigate' ? './index.html' : request;
     const cached = await cache.match(key, { ignoreSearch: true });
-    const refresh = fetch(request).then(async (response) => {
+    // Navigointipyyntöä ei voi kopioida uusilla asetuksilla, joten se haetaan osoitteella.
+    const fresh = request.mode === 'navigate'
+      ? new Request(request.url, { cache: 'no-cache' })
+      : new Request(request, { cache: 'no-cache' });
+    const refresh = fetch(fresh).then(async (response) => {
       if (response.ok) await cache.put(key, response.clone());
       return response;
     });
