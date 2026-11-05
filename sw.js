@@ -1,6 +1,6 @@
 // Kaikki polut ovat suhteellisia, joten sovellus toimii myös alihakemistossa
 // (esim. https://kayttaja.github.io/kasvisarki/). Vaihda versio, kun tiedostolista muuttuu.
-const CACHE = 'vegesaurus-arkiruokia-v1';
+const CACHE = 'vegesaurus-arkiruokia-v2';
 const ASSETS = [
   './',
   './index.html',
@@ -9,6 +9,7 @@ const ASSETS = [
   './data.js',
   './manifest.webmanifest',
   './icons/icon.svg',
+  './icons/vegesaurus.webp',
   './icons/icon-192.png',
   './icons/icon-512.png',
   './icons/apple-touch-icon.png',

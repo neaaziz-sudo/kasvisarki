@@ -44,6 +44,7 @@
       palette: 'herne',
       mode: 'system',
       veganOnly: false,
+      logoPaused: null, // null = käyttäjä ei ole valinnut, seurataan vähennetyn liikkeen asetusta
     };
   }
 
@@ -121,6 +122,7 @@
     if (PALETTES.some((p) => p.id === raw.palette)) state.palette = raw.palette;
     if (MODES.some((m) => m.id === raw.mode)) state.mode = raw.mode;
     state.veganOnly = raw.veganOnly === true;
+    if (typeof raw.logoPaused === 'boolean') state.logoPaused = raw.logoPaused;
     return state;
   }
 
@@ -254,6 +256,19 @@
     root.setAttribute('data-mode', resolveMode());
     const meta = document.querySelector('meta[name="theme-color"]');
     if (meta) meta.setAttribute('content', getComputedStyle(root).getPropertyValue('--bg').trim());
+  }
+
+  /* ---------- Logon animaatio ---------- */
+
+  function isLogoPaused() {
+    if (state.logoPaused !== null) return state.logoPaused;
+    return !!window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
+  function applyLogoMotion() {
+    const paused = isLogoPaused();
+    logoBtn.classList.toggle('is-paused', paused);
+    logoBtn.setAttribute('aria-label', paused ? 'Käynnistä logon animaatio' : 'Pysäytä logon animaatio');
   }
 
   /* ---------- Välilehdet ---------- */
@@ -887,9 +902,17 @@
   const toast = document.getElementById('toast');
   const settingsBtn = document.getElementById('settings-btn');
   const storageWarning = document.getElementById('storage-warning');
+  const logoBtn = document.getElementById('logo-btn');
 
   let state = loadState();
   applyTheme();
+  applyLogoMotion();
+
+  logoBtn.addEventListener('click', () => {
+    state.logoPaused = !isLogoPaused();
+    save();
+    applyLogoMotion();
+  });
 
   settingsBtn.addEventListener('click', () => {
     if (current !== 'asetukset') navigate('asetukset', false);
