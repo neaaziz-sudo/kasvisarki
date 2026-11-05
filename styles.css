@@ -92,17 +92,17 @@ a { color: var(--accent-ink); }
   max-width: 680px; margin: 0 auto;
   padding: calc(8px + env(safe-area-inset-top)) 12px 8px;
 }
-/* Logo on 12 ruudun sprite, jossa vegesaurus pureskelee. Ruutu 0 on pysäytetty kuva.
-   Napautus pysäyttää animaation. */
+/* Logo on 16 ruudun sprite, jossa vegesaurus märehtii: alaleuka jauhaa puolelta toiselle
+   ja posket pullistuvat. Ruutu 0 on pysäytetty kuva. Napautus pysäyttää animaation. */
 .logo-btn {
   flex: none; width: 88px; height: 88px; padding: 0;
-  background: url("icons/vegesaurus-syo.webp") 0 0 / 1200% 100% no-repeat;
+  background: url("icons/vegesaurus-marehtii.webp") 0 0 / 1600% 100% no-repeat;
   border: 0; border-radius: 18px; cursor: pointer; forced-color-adjust: none;
-  animation: logo-eat 1.2s steps(12) infinite;
+  animation: logo-eat 1.6s steps(16) infinite;
 }
 .logo-btn.is-paused { animation: none; }
 @keyframes logo-eat {
-  to { background-position: -1056px 0; }
+  to { background-position: -1408px 0; }
 }
 .app-title { flex: 1; min-width: 0; font-size: 1.2rem; line-height: 1.15; }
 .icon-btn {
